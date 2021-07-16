@@ -9,6 +9,8 @@ public class DrawService : MonoBehaviour
     [Range(0.01f, 0.2f)]
     public float brushSize = 0.1f;
 
+    private int layerNum = 0;
+
     [SerializeField]
     private GameObject brushPrefab;
 
@@ -22,7 +24,7 @@ public class DrawService : MonoBehaviour
 
     private GameObject trail;
     private Plane planeObj;
-
+    GameObject[] gameObjects;
     Vector3 startPos;
 
     // Start is called before the first frame update
@@ -40,6 +42,8 @@ public class DrawService : MonoBehaviour
     {
         DrawInputs();
         BrushSizeChange();
+        ClearBoard();
+
     }
 
     private void BrushSizeChange()
@@ -49,9 +53,10 @@ public class DrawService : MonoBehaviour
 
     private void ClearBoard()
     {
-        while (transform.childCount != 0)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            Destroy(transform.GetChild(0));
+            Transform child = transform.GetChild(i);
+            DestroyImmediate(child.gameObject);
         }
     }
 
@@ -61,7 +66,7 @@ public class DrawService : MonoBehaviour
         float hitpoint;
         if (planeObj.Raycast(Ray, out hitpoint))
         {
-            /*            Vector3 temp = Input.mousePosition;
+            /*          Vector3 temp = Input.mousePosition;
                         temp.z = 10f;
                         transform.position = Camera.main.ScreenToWorldPoint(temp);
 
@@ -71,7 +76,8 @@ public class DrawService : MonoBehaviour
                 trail = Instantiate(brushPrefab, transform);
                 startPos = Ray.GetPoint(hitpoint);
                 trail.transform.position = startPos;
-
+                trailRenderer.sortingOrder = layerNum;
+                layerNum++;
             }
 
             else if (Input.GetMouseButton(0) || Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
