@@ -64,6 +64,7 @@ public class ColorPickerUnityUI : MonoBehaviour
     {
         UpdateThumbPosition();
         WasClicked = true;
+        drawService.TrailColorChangeTo(value);
     }
     // called by event on object
     public void OnDrag()

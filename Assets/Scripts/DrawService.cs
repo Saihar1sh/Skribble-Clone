@@ -24,7 +24,7 @@ public class DrawService : MonoBehaviour
 
     private GameObject trail;
     private Plane planeObj;
-    GameObject[] gameObjects;
+    List<GameObject> gameObjects;
     Vector3 startPos;
 
     // Start is called before the first frame update
@@ -34,6 +34,7 @@ public class DrawService : MonoBehaviour
         trailRenderer = brushPrefab.GetComponent<TrailRenderer>();
         Color _color = Color.black;
         TrailColorChangeTo(_color);
+        gameObjects = new List<GameObject>();
         clearButton.onClick.AddListener(ClearBoard);
     }
 
@@ -42,7 +43,6 @@ public class DrawService : MonoBehaviour
     {
         DrawInputs();
         BrushSizeChange();
-        ClearBoard();
 
     }
 
@@ -56,7 +56,7 @@ public class DrawService : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform child = transform.GetChild(i);
-            DestroyImmediate(child.gameObject);
+            Destroy(child.gameObject);
         }
     }
 
