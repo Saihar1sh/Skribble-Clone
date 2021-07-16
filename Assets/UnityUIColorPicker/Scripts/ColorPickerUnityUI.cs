@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class ColorPickerUnityUI : MonoBehaviour
 {
@@ -25,6 +23,9 @@ public class ColorPickerUnityUI : MonoBehaviour
     private Vector3 Min; // min bounds
 
     private CanvasScaler myScale;
+
+    [SerializeField]
+    private DrawService drawService;
     //////////////////	
 
     private void Start()
@@ -69,7 +70,7 @@ public class ColorPickerUnityUI : MonoBehaviour
     {
         UpdateThumbPosition();
         WasClicked = true;
-
+        drawService.TrailColorChangeTo(value);
     }
 
 

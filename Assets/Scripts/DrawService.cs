@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DrawService : MonoBehaviour
 {
@@ -11,7 +13,10 @@ public class DrawService : MonoBehaviour
     private GameObject brushPrefab;
 
     [SerializeField]
-    private ColorPickerUnityUI colorPicker;
+    private Slider brushSizeSlider;
+
+    [SerializeField]
+    private Button clearButton;
 
     private TrailRenderer trailRenderer;
 
@@ -25,15 +30,29 @@ public class DrawService : MonoBehaviour
     {
         planeObj = new Plane(Camera.main.transform.forward * -1, transform.position);
         trailRenderer = brushPrefab.GetComponent<TrailRenderer>();
-        trailRenderer.startColor = trailRenderer.endColor = colorPicker.value;
-
+        Color _color = Color.black;
+        TrailColorChangeTo(_color);
+        clearButton.onClick.AddListener(ClearBoard);
     }
 
     // Update is called once per frame
     void Update()
     {
         DrawInputs();
+        BrushSizeChange();
+    }
 
+    private void BrushSizeChange()
+    {
+        trailRenderer.widthMultiplier = brushSizeSlider.value;
+    }
+
+    private void ClearBoard()
+    {
+        while (transform.childCount != 0)
+        {
+            Destroy(transform.GetChild(0));
+        }
     }
 
     private void DrawInputs()
@@ -52,8 +71,6 @@ public class DrawService : MonoBehaviour
                 trail = Instantiate(brushPrefab, transform);
                 startPos = Ray.GetPoint(hitpoint);
                 trail.transform.position = startPos;
-                trailRenderer.colorGradient.mode = GradientMode.Fixed;
-                trailRenderer.startColor = trailRenderer.endColor = colorPicker.value;
 
             }
 
@@ -65,5 +82,11 @@ public class DrawService : MonoBehaviour
             }
 
         }
+    }
+
+    public void TrailColorChangeTo(Color color)
+    {
+        trailRenderer.colorGradient.mode = GradientMode.Fixed;
+        trailRenderer.startColor = trailRenderer.endColor = color;
     }
 }
