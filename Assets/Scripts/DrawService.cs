@@ -63,18 +63,14 @@ public class DrawService : MonoBehaviour
     private void DrawInputs()
     {
         var Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float hitpoint;
-        if (planeObj.Raycast(Ray, out hitpoint))
+        RaycastHit hit;
+        if (Physics.Raycast(Ray, out hit))
         {
-            /*          Vector3 temp = Input.mousePosition;
-                        temp.z = 10f;
-                        transform.position = Camera.main.ScreenToWorldPoint(temp);
 
-            */
             if (Input.GetMouseButtonDown(0) || Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
             {
                 trail = Instantiate(brushPrefab, transform);
-                startPos = Ray.GetPoint(hitpoint);
+                startPos = hit.point;
                 trail.transform.position = startPos;
                 trailRenderer.sortingOrder = layerNum;
                 layerNum++;
@@ -82,7 +78,7 @@ public class DrawService : MonoBehaviour
 
             else if (Input.GetMouseButton(0) || Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
             {
-                Vector3 pos = Ray.GetPoint(hitpoint);
+                Vector3 pos = hit.point;
                 pos.y += 1f;
                 trail.transform.position = pos;
             }
