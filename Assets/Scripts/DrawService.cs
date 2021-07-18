@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class DrawService : MonoBehaviour
 {
-    [Range(0.01f, 0.2f)]
-    public float brushSize = 0.1f;
-
     private int layerNum = 0;
 
     [SerializeField]
@@ -22,10 +20,15 @@ public class DrawService : MonoBehaviour
 
     private TrailRenderer trailRenderer;
 
+    private PhotonView photonView;
+
     private GameObject trail;
     private Plane planeObj;
-    List<GameObject> gameObjects;
-    Vector3 startPos;
+
+    private bool tillTrailCreation = true;
+
+    List<GameObject> drawings;
+
 
     // Start is called before the first frame update
     void Start()
@@ -34,7 +37,7 @@ public class DrawService : MonoBehaviour
         trailRenderer = brushPrefab.GetComponent<TrailRenderer>();
         Color _color = Color.black;
         TrailColorChangeTo(_color);
-        gameObjects = new List<GameObject>();
+        drawings = new List<GameObject>();
         clearButton.onClick.AddListener(ClearBoard);
     }
 
@@ -53,10 +56,9 @@ public class DrawService : MonoBehaviour
 
     private void ClearBoard()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        foreach (GameObject item in drawings)
         {
-            Transform child = transform.GetChild(i);
-            Destroy(child.gameObject);
+            Destroy(item);
         }
     }
 
@@ -66,13 +68,15 @@ public class DrawService : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(Ray, out hit))
         {
+            trailRenderer.sortingOrder = layerNum;
 
             if (Input.GetMouseButtonDown(0) || Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
             {
-                trail = Instantiate(brushPrefab, transform);
-                startPos = hit.point;
-                trail.transform.position = startPos;
-                trailRenderer.sortingOrder = layerNum;
+                Vector3 startPos = hit.point;
+                trail = PhotonNetwork.Instantiate("Brush", startPos, Quaternion.identity);
+                photonView = trail.gameObject.GetComponent<PhotonView>();
+                tillTrailCreation = false;
+                drawings.Add(trail.gameObject);
                 layerNum++;
             }
 
@@ -80,15 +84,23 @@ public class DrawService : MonoBehaviour
             {
                 Vector3 pos = hit.point;
                 pos.y += 1f;
-                trail.transform.position = pos;
+                ChangeTrailPos(pos);
             }
-
         }
-    }
 
+    }
+    private void ChangeTrailPos(Vector3 pos)
+    {
+        if (photonView.IsMine)
+            trail.transform.position = pos;
+    }
     public void TrailColorChangeTo(Color color)
     {
-        trailRenderer.colorGradient.mode = GradientMode.Fixed;
-        trailRenderer.startColor = trailRenderer.endColor = color;
+        if (tillTrailCreation || photonView.IsMine)
+        {
+            trailRenderer.colorGradient.mode = GradientMode.Fixed;
+            trailRenderer.startColor = trailRenderer.endColor = color;
+
+        }
     }
 }
