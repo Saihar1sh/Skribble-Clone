@@ -46,6 +46,8 @@ namespace Photon.Pun
 
         PhotonView m_PhotonView;
 
+        TrailRenderer trailRenderer;
+
         bool m_ReceivedNetworkUpdate = false;
 
         /// <summary>
@@ -56,7 +58,7 @@ namespace Photon.Pun
         void Awake()
         {
             this.m_PhotonView = GetComponent<PhotonView>();
-
+            this.trailRenderer = m_PhotonView.GetComponent<TrailRenderer>();
             this.m_PositionControl = new PhotonTransformViewPositionControl(this.m_PositionModel);
             this.m_RotationControl = new PhotonTransformViewRotationControl(this.m_RotationModel);
             this.m_ScaleControl = new PhotonTransformViewScaleControl(this.m_ScaleModel);
@@ -106,7 +108,7 @@ namespace Photon.Pun
                 return;
             }
 
-            transform.localScale = this.m_ScaleControl.GetScale(transform.localScale);
+            trailRenderer.endWidth = trailRenderer.startWidth = this.trailRenderer.endWidth = this.trailRenderer.startWidth;                                 //_?SH
         }
 
         /// <summary>

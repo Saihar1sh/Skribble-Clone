@@ -58,7 +58,7 @@ public class DrawService : MonoBehaviour
     {
         foreach (GameObject item in drawings)
         {
-            Destroy(item);
+            PhotonNetwork.Destroy(item.gameObject);
         }
     }
 
