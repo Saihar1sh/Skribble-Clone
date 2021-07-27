@@ -8,11 +8,12 @@ public class ServerConnection : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     private Image loadingScreen;
+    [SerializeField]
+    private Button btn;
 
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
-
         loadingScreen.gameObject.SetActive(true);
     }
 
@@ -24,4 +25,5 @@ public class ServerConnection : MonoBehaviourPunCallbacks
     {
         loadingScreen.gameObject.SetActive(false);
     }
+
 }

@@ -15,6 +15,7 @@ public class ChatService : MonoBehaviour, IChatClientListener
     private void Start()
     {
         chatClient = new ChatClient(this);
+        //GameUIHandler.Instance.joinBtn.onClick.AddListener(JoinChatRoom);
     }
 
     private void Update()
@@ -24,6 +25,7 @@ public class ChatService : MonoBehaviour, IChatClientListener
 
     private void JoinChatRoom()
     {
+        Debug.Log("join");
         chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.AppVersion, new AuthenticationValues(userId));
 
     }

@@ -9,6 +9,10 @@ public class DrawService : MonoBehaviour
 {
     private int layerNum = 0;
 
+    private float trailSize;
+
+    private TrailSync trailSync;
+
     [SerializeField]
     private GameObject brushPrefab;
 
@@ -35,10 +39,12 @@ public class DrawService : MonoBehaviour
     {
         planeObj = new Plane(Camera.main.transform.forward * -1, transform.position);
         trailRenderer = brushPrefab.GetComponent<TrailRenderer>();
+        trailSync = brushPrefab.GetComponent<TrailSync>();
         Color _color = Color.black;
         TrailColorChangeTo(_color);
         drawings = new List<GameObject>();
         clearButton.onClick.AddListener(ClearBoard);
+        trailSize = brushSizeSlider.value;
     }
 
     // Update is called once per frame
@@ -51,7 +57,8 @@ public class DrawService : MonoBehaviour
 
     private void BrushSizeChange()
     {
-        trailRenderer.widthMultiplier = brushSizeSlider.value;
+        trailRenderer.widthMultiplier = trailSync.BrushSlider(trailSize);
+
     }
 
     private void ClearBoard()

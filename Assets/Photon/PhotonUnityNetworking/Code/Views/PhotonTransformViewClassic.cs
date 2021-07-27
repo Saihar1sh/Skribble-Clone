@@ -107,8 +107,7 @@ namespace Photon.Pun
             {
                 return;
             }
-
-            trailRenderer.endWidth = trailRenderer.startWidth = this.trailRenderer.endWidth = this.trailRenderer.startWidth;                                 //_?SH
+            transform.localScale = this.m_ScaleControl.GetScale(transform.localScale);
         }
 
         /// <summary>
@@ -495,6 +494,7 @@ namespace Photon.Pun
             Disabled,
             MoveTowards,
             Lerp,
+
         }
 
 
@@ -509,6 +509,7 @@ namespace Photon.Pun
     {
         PhotonTransformViewScaleModel m_Model;
         Vector3 m_NetworkScale = Vector3.one;
+        TrailRenderer trailRenderer = new TrailRenderer();
 
         public PhotonTransformViewScaleControl(PhotonTransformViewScaleModel model)
         {
@@ -535,8 +536,10 @@ namespace Photon.Pun
                     return Vector3.MoveTowards(currentScale, m_NetworkScale, m_Model.InterpolateMoveTowardsSpeed * Time.deltaTime);
                 case PhotonTransformViewScaleModel.InterpolateOptions.Lerp:
                     return Vector3.Lerp(currentScale, m_NetworkScale, m_Model.InterpolateLerpSpeed * Time.deltaTime);
+
             }
         }
+
 
         public void OnPhotonSerializeView(Vector3 currentScale, PhotonStream stream, PhotonMessageInfo info)
         {
